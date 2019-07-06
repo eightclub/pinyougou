@@ -26,11 +26,13 @@ public class BrandController {
     @GetMapping("/testPage")
     public List<TbBrand> testPage(@RequestParam(name="pageNum",defaultValue = "1")Integer pageNum,
                                   @RequestParam(name="pageSize",defaultValue = "10")Integer pageSize){
-        return brandService.testPage(pageNum, pageSize);
+        //return brandService.testPage(pageNum, pageSize);
+        return brandService.findPage(pageNum, pageSize).getList();
     }
 
     @GetMapping("/findAll")
     public List<TbBrand> findAll(){
+        //return brandService.queryAll();
         return brandService.findAll();
     }
 }

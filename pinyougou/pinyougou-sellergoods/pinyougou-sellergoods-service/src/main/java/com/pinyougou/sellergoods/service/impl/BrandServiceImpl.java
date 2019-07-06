@@ -14,6 +14,7 @@ import java.util.List;
 public class BrandServiceImpl extends BaseServiceImpl<TbBrand> implements BrandService {
 
 
+    @Autowired
     private BrandMapper brandMapper;
 /*
 
@@ -25,7 +26,7 @@ public class BrandServiceImpl extends BaseServiceImpl<TbBrand> implements BrandS
 */
 
     @Override
-    public List<TbBrand> findAll() {
+    public List<TbBrand> queryAll() {
         return brandMapper.queryAll();
     }
 

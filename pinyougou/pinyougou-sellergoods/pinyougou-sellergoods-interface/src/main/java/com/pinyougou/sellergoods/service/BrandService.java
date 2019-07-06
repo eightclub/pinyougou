@@ -6,7 +6,7 @@ import com.pinyougou.service.BaseService;
 import java.util.List;
 
 public interface BrandService extends BaseService<TbBrand> {
-    List<TbBrand> findAll();
+    List<TbBrand> queryAll();
 
     /**
      * 分页查询品牌列表
