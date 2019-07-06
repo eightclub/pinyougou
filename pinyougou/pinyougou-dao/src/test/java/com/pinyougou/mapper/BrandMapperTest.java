@@ -126,7 +126,7 @@ public class BrandMapperTest {
     //批量删除
     @Test
     public void deleteByIds(){
-        Long[] ids = {24L, 25L};
+        Long[] ids = {26L, 27L};
         //StringUtils.join(ids, ",") 表示将数组所有元素使用,连接
         brandMapper.deleteByIds(StringUtils.join(ids, ","));
     }
