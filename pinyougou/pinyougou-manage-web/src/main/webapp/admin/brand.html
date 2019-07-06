@@ -13,6 +13,7 @@
     <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
     <script src="../js/vuejs-2.5.16.js"></script>
     <script src="../js/axios-0.18.0.js"></script>
+    <script src="../js/pagination.js"></script>
 
 
 </head>
@@ -71,8 +72,9 @@
 
 			                      </tbody>
 			                  </table>
-			                  <!--数据列表/-->                        
-							  
+			                  <!--数据列表/-->
+                            <!-- 分页导航条 -->
+                            <navigation :total="total" :pageSize="pageSize" :current.sync="pageNum" @navpage="searchList"></navigation>
 							 
                         </div>
                         <!-- 数据表格 /-->
@@ -117,10 +119,27 @@
         el:"#app",
         data:{
             //列表数据
-            entityList:[]
+            entityList:[],
+            //总记录数
+            total:0,
+            //页号
+            pageNum:1,
+            //页大小
+            pageSize:10
+        },
+        methods:{
+            searchList:function (pageNum) {
+                this.pageNum = pageNum;
+
+                axios.get("../brand/findPage.do?pageNum=" + this.pageNum + "&pageSize="+this.pageSize).then(function (response) {
+                    //总记录数
+                    app.total = response.data.total;
+                    app.entityList = response.data.list;
+                });
+            }
         },
         created(){
-            axios.get("../brand/findAll.do").then(function (response) {
+            /*axios.get("../brand/findAll.do").then(function (response) {
                 //response里面的属性有：data,status,statusText,headers,config
                 console.log(response);
                 //this表示窗口对象，期望的是vue实例,app就是vue实例变量
@@ -128,7 +147,8 @@
             }).catch(function () {
                 //如果网络中断，服务器宕机
                 alert("获取数据失败!");
-            });
+            });*/
+            this.searchList(this.pageNum);
         }
     });
 </script>
