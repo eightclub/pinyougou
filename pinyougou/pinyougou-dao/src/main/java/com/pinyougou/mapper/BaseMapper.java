@@ -6,5 +6,5 @@ import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.common.ids.DeleteByIdsMapper;
 
 @tk.mybatis.mapper.annotation.RegisterMapper
-public interface BaseMapper<T> extends Mapper<TbBrand>, InsertListMapper<TbBrand>, DeleteByIdsMapper<TbBrand> {
+public interface BaseMapper<T> extends Mapper<T>, InsertListMapper<T>, DeleteByIdsMapper<T> {
 }
