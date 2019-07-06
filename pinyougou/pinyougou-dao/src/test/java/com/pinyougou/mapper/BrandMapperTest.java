@@ -3,6 +3,7 @@ package com.pinyougou.mapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pinyougou.pojo.TbBrand;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -102,5 +104,30 @@ public class BrandMapperTest {
             System.out.println(brand);
         }
 
+    }
+
+    //批量新增
+    @Test
+    public void insertList(){
+        List<TbBrand> list = new ArrayList<>();
+        TbBrand brand = new TbBrand();
+        brand.setName("test1");
+        brand.setFirstChar("T");
+        list.add(brand);
+
+        brand = new TbBrand();
+        brand.setName("test2");
+        brand.setFirstChar("T");
+        list.add(brand);
+
+        brandMapper.insertList(list);
+    }
+
+    //批量删除
+    @Test
+    public void deleteByIds(){
+        Long[] ids = {24L, 25L};
+        //StringUtils.join(ids, ",") 表示将数组所有元素使用,连接
+        brandMapper.deleteByIds(StringUtils.join(ids, ","));
     }
 }

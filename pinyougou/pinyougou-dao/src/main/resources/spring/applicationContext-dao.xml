@@ -39,7 +39,9 @@ http://www.springframework.org/schema/context/spring-context.xsd">
         <!--要使用的通用mapper；要被业务Mapper继承-->
         <property name="properties">
             <value>
-                mappers=tk.mybatis.mapper.common.Mapper
+                mappers=tk.mybatis.mapper.common.Mapper,
+                tk.mybatis.mapper.additional.insert.InsertListMapper,
+                tk.mybatis.mapper.common.ids.DeleteByIdsMapper
             </value>
         </property>
     </bean>
