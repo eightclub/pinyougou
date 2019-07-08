@@ -34,7 +34,7 @@
                                 <div class="form-group form-inline">
                                     <div class="btn-group">
                                         <button @click="entity={}" type="button" class="btn btn-default" title="新建" data-toggle="modal" data-target="#editModal" ><i class="fa fa-file-o"></i> 新建</button>
-                                        <button type="button" class="btn btn-default" title="删除" ><i class="fa fa-trash-o"></i> 删除</button>           
+                                        <button @click="deleteList()" type="button" class="btn btn-default" title="删除" ><i class="fa fa-trash-o"></i> 删除</button>
                                         <button type="button" class="btn btn-default" title="刷新" onclick="window.location.reload();"><i class="fa fa-refresh"></i> 刷新</button>
                                     </div>
                                 </div>
@@ -61,7 +61,7 @@
 			                      </thead>
 			                      <tbody>
 			                          <tr v-for="entity in entityList">
-			                              <td><input  type="checkbox" ></td>			                              
+			                              <td><input :value="entity.id" v-model="ids" type="checkbox" ></td>
 				                          <td>{{entity.id}}</td>
 									      <td>{{entity.name}}</td>
 		                                  <td>{{entity.firstChar}}</td>
@@ -91,7 +91,7 @@
 	<div class="modal-content">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-			<h3 id="myModalLabel">品牌编辑</h3>{{entity}}
+			<h3 id="myModalLabel">品牌编辑</h3>
 		</div>
 		<div class="modal-body">		
 			<table class="table table-bordered table-striped"  width="800px">
@@ -127,7 +127,9 @@
             //页大小
             pageSize:10,
             //实体
-            entity:{}
+            entity:{},
+            //选择了的品牌id
+            ids:[]
         },
         methods:{
             searchList:function (pageNum) {
@@ -138,6 +140,27 @@
                     app.total = response.data.total;
                     app.entityList = response.data.list;
                 });
+            },
+            deleteList: function(){
+                //判断是否有选择
+                if (this.ids.length == 0) {
+                    alert("请先选择要删除的记录");
+                    return;
+                }
+                //确认是否要删除；confirm 当点击弹出来的框中的确定时返回true否则false
+                if (confirm("你确认要删除选择了的记录吗？")) {
+                    //删除
+                    axios.get("../brand/delete.do?ids=" + this.ids).then(function (response) {
+                        if(response.data.success){
+                            app.ids = [];
+                            app.searchList(1);
+                        } else {
+                            alert(response.data.message);
+                        }
+                    });
+                }
+
+
             },
             //根据id查询
             findOne: function(id){
