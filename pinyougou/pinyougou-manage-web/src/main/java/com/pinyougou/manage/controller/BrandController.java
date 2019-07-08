@@ -17,6 +17,16 @@ public class BrandController {
     private BrandService brandService;
 
     /**
+     * 根据主键查询
+     * @param id 品牌id
+     * @return 品牌
+     */
+    @GetMapping("/findOne/{id}")
+    public TbBrand findOne(@PathVariable Long id){
+        return brandService.findOne(id);
+    }
+
+    /**
      * 新增品牌
      * @param brand 品牌
      * @return 操作结果
@@ -32,6 +42,23 @@ public class BrandController {
         }
         //return new Result(false, "新增品牌失败");
         return Result.fail("新增品牌失败");
+    }
+
+    /**
+     * 修改品牌
+     * @param brand 品牌
+     * @return 操作结果
+     */
+    @PostMapping("/update")
+    public Result update(@RequestBody TbBrand brand){
+        try {
+            brandService.update(brand);
+            return Result.ok("修改品牌成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //return new Result(false, "新增品牌失败");
+        return Result.fail("修改品牌失败");
     }
 
     /**
