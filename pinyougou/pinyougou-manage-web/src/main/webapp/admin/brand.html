@@ -40,8 +40,9 @@
                                 </div>
                             </div>
                             <div class="box-tools pull-right">
-                                <div class="has-feedback">
-							                                         
+                                <div class="has-feedback">{{searchEntity}}
+							           品牌名称：<input v-model="searchEntity.name"> 品牌首字母：<input v-model="searchEntity.firstChar">
+                                    <button class="btn btn-default" @click="searchList(1)">查询</button>
                                 </div>
                             </div>
                             <!--工具栏/-->
@@ -129,13 +130,22 @@
             //实体
             entity:{},
             //选择了的品牌id
-            ids:[]
+            ids:[],
+            //搜索条件对象
+            searchEntity:{}
         },
         methods:{
             searchList:function (pageNum) {
                 this.pageNum = pageNum;
 
+/*
                 axios.get("../brand/findPage.do?pageNum=" + this.pageNum + "&pageSize="+this.pageSize).then(function (response) {
+                    //总记录数
+                    app.total = response.data.total;
+                    app.entityList = response.data.list;
+                });
+*/
+                axios.post("../brand/search.do?pageNum=" + this.pageNum + "&pageSize="+this.pageSize, this.searchEntity).then(function (response) {
                     //总记录数
                     app.total = response.data.total;
                     app.entityList = response.data.list;
