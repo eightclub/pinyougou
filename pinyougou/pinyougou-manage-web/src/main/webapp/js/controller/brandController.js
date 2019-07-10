@@ -14,9 +14,24 @@ var app = new Vue({
         //选择了的品牌id
         ids:[],
         //搜索条件对象
-        searchEntity:{}
+        searchEntity:{},
+        //全选
+        checkAll:false
     },
     methods:{
+        //全选
+        selectAll:function(){
+            if(!this.checkAll){
+                //选上
+                this.ids = [];
+                for (let i = 0; i < this.entityList.length; i++) {
+                    const entity = this.entityList[i];
+                    this.ids.push(entity.id);
+                }
+            } else {
+                this.ids = [];
+            }
+        },
         searchList:function (pageNum) {
             this.pageNum = pageNum;
 
@@ -79,6 +94,20 @@ var app = new Vue({
             });
         }
 
+    },
+    //监控，vue实例的数据属性
+    watch:{
+        ids:{
+            //开启深度监控
+            deep:true,
+            handler:function (newValue, oldValue) {
+                if (this.ids.length == this.entityList.length) {
+                    this.checkAll = true;
+                } else {
+                    this.checkAll = false;
+                }
+            }
+        }
     },
     created(){
         /*axios.get("../brand/findAll.do").then(function (response) {
