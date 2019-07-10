@@ -8,6 +8,9 @@ import com.pinyougou.vo.Result;
 import com.pinyougou.vo.Specification;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RequestMapping("/specification")
 @RestController
 public class SpecificationController {
@@ -88,5 +91,15 @@ public class SpecificationController {
                            @RequestBody TbSpecification specification) {
         return specificationService.search(pageNum, pageSize, specification);
     }
+
+    /**
+     * 获取规格下拉框数据；数据结构如返回结果
+     * @return [{"id":27,"text":"网络"},{"id":32,"text":"机身内存"}]
+     */
+    @GetMapping("/selectOptionList")
+    public List<Map<String, Object>> selectOptionList(){
+        return specificationService.selectOptionList();
+    }
+
 
 }
