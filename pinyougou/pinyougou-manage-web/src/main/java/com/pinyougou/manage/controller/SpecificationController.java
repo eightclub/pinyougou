@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class SpecificationController {
 
-    @Reference
+    //服务超时时间；默认1秒，现在设置为100秒
+    @Reference(timeout = 100000)
     private SpecificationService specificationService;
 
     /**
