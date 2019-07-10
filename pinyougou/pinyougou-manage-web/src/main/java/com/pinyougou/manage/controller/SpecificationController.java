@@ -36,11 +36,11 @@ public class SpecificationController {
     /**
      * 根据主键查询
      * @param id 主键
-     * @return 实体
+     * @return 规格及其选项列表
      */
     @GetMapping("/findOne/{id}")
-    public TbSpecification findOne(@PathVariable Long id){
-        return specificationService.findOne(id);
+    public Specification findOne(@PathVariable Long id){
+        return specificationService.findSpecification(id);
     }
 
     /**
