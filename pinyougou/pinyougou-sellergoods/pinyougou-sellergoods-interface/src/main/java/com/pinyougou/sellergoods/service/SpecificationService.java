@@ -29,4 +29,10 @@ public interface SpecificationService extends BaseService<TbSpecification> {
      * @return 规格及其选项列表
      */
     Specification findSpecification(Long id);
+
+    /**
+     * 修改
+     * @param specification 规格及其选项列表
+     */
+    void updateSpecification(Specification specification);
 }

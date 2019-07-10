@@ -74,4 +74,20 @@ public class SpecificationServiceImpl extends BaseServiceImpl<TbSpecification> i
         return specification;
     }
 
+    @Override
+    public void updateSpecification(Specification specification) {
+        //1. 更新规格；
+        update(specification.getSpecification());
+
+        //2. 根据规格id删除其对应的所有规格选项；delete from tb_specification_option where spec_id=?
+        TbSpecificationOption param = new TbSpecificationOption();
+        param.setSpecId(specification.getSpecification().getId());
+        specificationOptionMapper.delete(param);
+        //3. 保存规格选项
+        for (TbSpecificationOption tbSpecificationOption : specification.getSpecificationOptionList()) {
+            tbSpecificationOption.setSpecId(specification.getSpecification().getId());
+        }
+        specificationOptionMapper.insertList(specification.getSpecificationOptionList());
+    }
+
 }
