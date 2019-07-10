@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BrandServiceImpl extends BaseServiceImpl<TbBrand> implements BrandService {
@@ -67,5 +68,10 @@ public class BrandServiceImpl extends BaseServiceImpl<TbBrand> implements BrandS
 
         //返回分页信息对象
         return new PageInfo<>(list);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectOptionList() {
+        return brandMapper.selectOptionList();
     }
 }
