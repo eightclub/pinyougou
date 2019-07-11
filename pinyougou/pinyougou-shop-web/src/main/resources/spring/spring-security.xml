@@ -42,15 +42,20 @@ http://www.springframework.org/schema/security/spring-security.xsd">
     <!--加密方式；不加密使用明文-->
     <beans:bean id="passwordEncoder" class="org.springframework.security.crypto.password.NoOpPasswordEncoder"/>
 
+    <!--动态认证类-->
+    <beans:bean id="userDetailService" class="com.pinyougou.shop.service.impl.UserDetailServiceImpl"/>
+
     <!--认证管理器-->
     <authentication-manager>
-        <authentication-provider>
+        <authentication-provider user-service-ref="userDetailService" >
             <password-encoder ref="passwordEncoder"/>
+<!--
             <user-service>
-                <!--用户名、角色、密码-->
+                &lt;!&ndash;用户名、角色、密码&ndash;&gt;
                 <user name="itcast" authorities="ROLE_SELLER" password="123456"/>
                 <user name="admin" authorities="ROLE_SELLER" password="123456"/>
             </user-service>
+-->
         </authentication-provider>
     </authentication-manager>
 </beans:beans>
