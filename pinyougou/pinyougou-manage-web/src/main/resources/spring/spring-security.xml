@@ -32,6 +32,9 @@ http://www.springframework.org/schema/security/spring-security.xsd">
             <frame-options policy="SAMEORIGIN"/>
         </headers>
 
+        <!--开启退出-->
+        <logout/>
+
     </http>
 
     <!--加密方式；不加密使用明文-->
