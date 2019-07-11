@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class SellerController {
 
+    //如果超过1秒则会重发2次
     @Reference
     private SellerService sellerService;
 
