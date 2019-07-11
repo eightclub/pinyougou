@@ -1,5 +1,9 @@
 package com.pinyougou.shop.service.impl;
 
+import com.alibaba.dubbo.config.annotation.Reference;
+import com.pinyougou.pojo.TbSeller;
+import com.pinyougou.sellergoods.service.SellerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -11,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDetailServiceImpl implements UserDetailsService {
+
+    @Reference
+    private SellerService sellerService;
 
     /**
      * 实现动态认证；根据username到数据库中查询用户
@@ -25,7 +32,13 @@ public class UserDetailServiceImpl implements UserDetailsService {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_SELLER"));
 
+        TbSeller seller = sellerService.findOne(username);
+        if (seller != null && "1".equals(seller.getStatus())) {
+            return new User(username, seller.getPassword(), authorities);
+        }
+
         //用户信息（用户名、密码、角色）
-        return new User(username, "123456", authorities);
+        //return new User(username, "123456", authorities);
+        return null;
     }
 }
