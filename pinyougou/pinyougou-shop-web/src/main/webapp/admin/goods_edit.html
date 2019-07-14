@@ -167,7 +167,7 @@
 
                             <!--扩展属性-->
                             <div class="tab-pane" id="customAttribute">
-                                <div class="row data-type">
+                                <div class="row data-type">{{entity.goodsDesc.customAttributeItems}}
                                     <div v-for="cai in entity.goodsDesc.customAttributeItems">
                                         <div class="col-md-2 title">{{cai.text}}</div>
                                         <div class="col-md-10 data">
