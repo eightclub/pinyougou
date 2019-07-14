@@ -179,13 +179,14 @@
 
                             <!--规格-->
                             <div class="tab-pane" id="spec">
+                                goodsDesc.specificationItems = {{entity.goodsDesc.specificationItems}}
                                 <div class="row data-type">
                                     <div class="col-md-2 title">是否启用规格</div>
                                     <div class="col-md-10 data">
                                         <input v-model="entity.goods.isEnableSpec" :true-value="1" :false-value="0" type="checkbox" >
                                     </div>
                                 </div>
-                                <p>
+                                <p>itemList = {{entity.itemList}}
 
                                 <div v-show="entity.goods.isEnableSpec==1">
 
