@@ -7,6 +7,9 @@ import com.pinyougou.sellergoods.service.TypeTemplateService;
 import com.pinyougou.vo.Result;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RequestMapping("/typeTemplate")
 @RestController
 public class TypeTemplateController {
@@ -85,6 +88,20 @@ public class TypeTemplateController {
                              @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
                            @RequestBody TbTypeTemplate typeTemplate) {
         return typeTemplateService.search(pageNum, pageSize, typeTemplate);
+    }
+
+    /**
+     * 根据分类模版id查询规格及其选项；数据结构如下：
+     * [
+     *     {"id":27,"text":"网络", "options":[{"id":1,"optionName":"移动3G"}...]},
+     *     {"id":32,"text":"机身内存", "options":[{"id":2,"optionName":"16G"}...]}
+     * ]
+     * @param id 分类模版id
+     * @return 规格及其选项
+     */
+    @GetMapping("/findSpecList")
+    public List<Map> findSpecList(Long id){
+        return typeTemplateService.findSpecList(id);
     }
 
 }
