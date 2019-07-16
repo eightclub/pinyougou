@@ -56,6 +56,14 @@ public class GoodsController {
     @PostMapping("/update")
     public Result update(@RequestBody Goods goods){
         try {
+            //老商品
+            TbGoods oldGoods = goodsService.findOne(goods.getGoods().getId());
+            //获取当前登录的商家
+            String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
+            if (!sellerId.equals(oldGoods.getSellerId())) {
+                return Result.fail("操作非法");
+            }
+
             goodsService.updateGoods(goods);
             return Result.ok("修改成功");
         } catch (Exception e) {
