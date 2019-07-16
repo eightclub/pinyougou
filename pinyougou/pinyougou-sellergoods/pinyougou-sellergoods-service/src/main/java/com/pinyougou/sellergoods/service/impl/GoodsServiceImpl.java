@@ -140,6 +140,21 @@ public class GoodsServiceImpl extends BaseServiceImpl<TbGoods> implements GoodsS
         Example example = new Example(TbGoods.class);
         example.createCriteria().andIn("id", Arrays.asList(ids));
         goodsMapper.updateByExampleSelective(tbGoods, example);
+
+        //更新商品sku的启用状态
+        //sql -> update tb_item set status=? where goods_id in(?, ?,...)
+        TbItem tbItem = new TbItem();
+        if ("2".equals(status)) {
+            //审核通过；sku需要启用
+            tbItem.setStatus("1");
+        } else {
+            //审核不通过；sku不需要启用
+            tbItem.setStatus("0");
+        }
+        Example itemExample = new Example(TbItem.class);
+        itemExample.createCriteria().andIn("goodsId", Arrays.asList(ids));
+
+        itemMapper.updateByExampleSelective(tbItem, itemExample);
     }
 
     /**
