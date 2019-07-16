@@ -12,6 +12,7 @@ import com.pinyougou.service.impl.BaseServiceImpl;
 import com.pinyougou.vo.Goods;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.Arrays;
@@ -19,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+@Transactional
 @Service
 public class GoodsServiceImpl extends BaseServiceImpl<TbGoods> implements GoodsService {
 
@@ -77,6 +79,8 @@ public class GoodsServiceImpl extends BaseServiceImpl<TbGoods> implements GoodsS
     public void addGoods(Goods goods) {
         //保存商品基本信息
         add(goods.getGoods());
+
+        //int i = 1/0;
 
         //保存商品描述信息
         goods.getGoodsDesc().setGoodsId(goods.getGoods().getId());
