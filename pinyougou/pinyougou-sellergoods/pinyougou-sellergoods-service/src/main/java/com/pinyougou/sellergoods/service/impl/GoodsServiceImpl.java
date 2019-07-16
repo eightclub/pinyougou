@@ -102,6 +102,27 @@ public class GoodsServiceImpl extends BaseServiceImpl<TbGoods> implements GoodsS
         return goods;
     }
 
+    @Override
+    public void updateGoods(Goods goods) {
+        //- 更新基本信息
+        //如果修改了则需要重新审核，也就是修改审核状态为0
+        goods.getGoods().setAuditStatus("0");
+        update(goods.getGoods());
+
+        //- 更新描述信息
+        goodsDescMapper.updateByPrimaryKeySelective(goods.getGoodsDesc());
+
+        //- 更新sku列表（先删除，再保存）
+        //根据商品spu id删除其对应的所有的sku
+        //DELETE FROM tb_item WHERE goods_id=?
+        TbItem tbItem = new TbItem();
+        tbItem.setGoodsId(goods.getGoods().getId());
+        itemMapper.delete(tbItem);
+
+        //保存sku
+        saveItemList(goods);
+    }
+
     /**
      * 保存商品sku列表信息
      * @param goods 商品信息：基本、描述、sku列表

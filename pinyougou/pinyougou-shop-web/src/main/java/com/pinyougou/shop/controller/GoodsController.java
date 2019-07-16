@@ -50,13 +50,13 @@ public class GoodsController {
 
     /**
      * 修改
-     * @param goods 实体
+     * @param goods 商品vo：基本、描述、sku列表
      * @return 操作结果
      */
     @PostMapping("/update")
-    public Result update(@RequestBody TbGoods goods){
+    public Result update(@RequestBody Goods goods){
         try {
-            goodsService.update(goods);
+            goodsService.updateGoods(goods);
             return Result.ok("修改成功");
         } catch (Exception e) {
             e.printStackTrace();
