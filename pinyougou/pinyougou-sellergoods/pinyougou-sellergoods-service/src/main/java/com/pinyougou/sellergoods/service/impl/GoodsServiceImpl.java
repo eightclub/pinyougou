@@ -82,6 +82,26 @@ public class GoodsServiceImpl extends BaseServiceImpl<TbGoods> implements GoodsS
         saveItemList(goods);
     }
 
+    @Override
+    public Goods findGoodsById(Long id) {
+        Goods goods = new Goods();
+
+        //根据spu id查询基本信息
+        goods.setGoods(findOne(id));
+
+        //根据spu id查询描述信息
+        goods.setGoodsDesc(goodsDescMapper.selectByPrimaryKey(id));
+
+        //根据spu id查询sku列表信息
+        //sql -> select * from tb_item where goods_id=?
+        TbItem item = new TbItem();
+        item.setGoodsId(id);
+        List<TbItem> itemList = itemMapper.select(item);
+        goods.setItemList(itemList);
+
+        return goods;
+    }
+
     /**
      * 保存商品sku列表信息
      * @param goods 商品信息：基本、描述、sku列表
