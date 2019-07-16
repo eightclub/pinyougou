@@ -97,4 +97,21 @@ public class GoodsController {
         return goodsService.search(pageNum, pageSize, goods);
     }
 
+    /**
+     * 批量更新商品spu的状态
+     * @param status 商品审核状态
+     * @param ids 商品spu id数组
+     * @return 操作结果
+     */
+    @GetMapping("/updateStatus")
+    public Result updateStatus(String status, Long[] ids){
+        try {
+            goodsService.updateStatus(status, ids);
+            return Result.ok("更新状态成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Result.fail("更新状态失败");
+    }
+
 }
