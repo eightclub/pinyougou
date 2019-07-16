@@ -27,6 +27,8 @@ public class GoodsController {
             //设置商家
             String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
             goods.getGoods().setSellerId(sellerId);
+            //商品审核状态为：未审核
+            goods.getGoods().setAuditStatus("0");
             goodsService.addGoods(goods);
 
             return Result.ok("新增成功");
@@ -89,6 +91,9 @@ public class GoodsController {
     public PageInfo<TbGoods> search(@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
                              @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
                            @RequestBody TbGoods goods) {
+        //设置当前登录用户作为商家条件查询
+        String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
+        goods.setSellerId(sellerId);
         return goodsService.search(pageNum, pageSize, goods);
     }
 

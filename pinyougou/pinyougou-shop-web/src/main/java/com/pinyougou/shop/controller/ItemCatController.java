@@ -89,6 +89,11 @@ public class ItemCatController {
         return itemCatService.search(pageNum, pageSize, itemCat);
     }
 
+    @GetMapping("/findAll")
+    public List<TbItemCat> findAll(){
+        return itemCatService.findAll();
+    }
+
     /**
      * 根据商品父分类id查询其子分类列表
      * @param parentId 商品父分类id
