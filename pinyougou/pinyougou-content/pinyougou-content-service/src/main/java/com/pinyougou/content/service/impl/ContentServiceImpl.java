@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import tk.mybatis.mapper.entity.Example;
 
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -24,6 +26,51 @@ public class ContentServiceImpl extends BaseServiceImpl<TbContent> implements Co
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Override
+    public void add(TbContent tbContent) {
+        super.add(tbContent);
+        //对新增的内容对应的内容分类在redis中的缓存进行更新；直接将该分类对应的内容列表删除
+        updateContentListInRedisByCategoryId(tbContent.getCategoryId());
+    }
+
+    /**
+     * 根据内容分类id更新其在redis中的内容列表
+     * @param categoryId 内容分类id
+     */
+    private void updateContentListInRedisByCategoryId(Long categoryId) {
+        redisTemplate.boundHashOps(REDIS_CONTENT).delete(categoryId);
+    }
+
+    @Override
+    public void update(TbContent tbContent) {
+        //查询老内容
+        TbContent oldContent = findOne(tbContent.getId());
+        if (!oldContent.getCategoryId().equals(tbContent.getCategoryId())) {
+            //更新旧分类对应的缓存
+            updateContentListInRedisByCategoryId(oldContent.getCategoryId());
+        }
+
+        super.update(tbContent);
+
+        //更新当前内容对应的内容分类缓存
+        updateContentListInRedisByCategoryId(tbContent.getCategoryId());
+    }
+
+    @Override
+    public void deleteByIds(Serializable[] ids) {
+        //根据内容id数组查询内容列表；遍历每个内容，根据其分类id到redis删除缓存
+        //select * from tb_content where id in(?,?..)
+        Example example = new Example(TbContent.class);
+        example.createCriteria()
+                .andIn("id", Arrays.asList(ids));
+        List<TbContent> contentList = contentMapper.selectByExample(example);
+        for (TbContent tbContent : contentList) {
+            updateContentListInRedisByCategoryId(tbContent.getCategoryId());
+        }
+
+        super.deleteByIds(ids);
+    }
 
     @Override
     public PageInfo<TbContent> search(Integer pageNum, Integer pageSize, TbContent content) {
