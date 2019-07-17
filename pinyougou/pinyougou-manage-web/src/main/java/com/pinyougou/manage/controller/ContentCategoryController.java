@@ -2,10 +2,13 @@ package com.pinyougou.manage.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.github.pagehelper.PageInfo;
+import com.pinyougou.pojo.TbContent;
 import com.pinyougou.pojo.TbContentCategory;
 import com.pinyougou.content.service.ContentCategoryService;
 import com.pinyougou.vo.Result;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/contentCategory")
 @RestController
@@ -85,6 +88,11 @@ public class ContentCategoryController {
                              @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
                            @RequestBody TbContentCategory contentCategory) {
         return contentCategoryService.search(pageNum, pageSize, contentCategory);
+    }
+
+    @GetMapping("/findAll")
+    public List<TbContentCategory> findAll(){
+        return contentCategoryService.findAll();
     }
 
 }
