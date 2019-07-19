@@ -5,6 +5,7 @@ import com.pinyougou.pojo.TbItem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -47,4 +48,35 @@ public class ElasticSearchTest {
 
         itemDao.save(item);
     }
+
+    //查询所有
+    @Test
+    public void findAll(){
+        Iterable<TbItem> items = itemDao.findAll();
+        for (TbItem item : items) {
+            System.out.println(item);
+        }
+    }
+
+    //分页查询所有
+    @Test
+    public void findAllByPage(){
+        //设置分页
+        //参数1：页号（从0开始）
+        //参数2：页大小
+        PageRequest pageRequest = PageRequest.of(0, 2);
+
+        Iterable<TbItem> items = itemDao.findAll(pageRequest);
+        for (TbItem item : items) {
+            System.out.println(item);
+        }
+    }
+
+    //删除
+    @Test
+    public void delete(){
+        itemDao.deleteById(100005945610L);
+    }
+
+
 }
