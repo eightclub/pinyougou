@@ -131,5 +131,29 @@ public class ElasticSearchTest {
         }
     }
 
+    //复制域搜索
+    @Test
+    public void copyFieldQuery(){
+
+        //创建查询构造对象
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+
+        /**
+         * 参数1：域名（与实体类中@Field配置的一致）
+         */
+        queryBuilder.withQuery(QueryBuilders.matchQuery("keywords", "步步高"));
+
+        //获取查询对象
+        NativeSearchQuery query = queryBuilder.build();
+
+        //查询
+        AggregatedPage<TbItem> items = elasticsearchTemplate.queryForPage(query, TbItem.class);
+        System.out.println("总记录数：" + items.getTotalElements());
+        System.out.println("总页数：" + items.getTotalPages());
+        for (TbItem item : items) {
+            System.out.println(item);
+        }
+    }
+
 
 }
