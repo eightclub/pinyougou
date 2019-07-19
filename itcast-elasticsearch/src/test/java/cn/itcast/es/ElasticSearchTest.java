@@ -2,6 +2,9 @@ package cn.itcast.es;
 
 import cn.itcast.es.dao.ItemDao;
 import com.pinyougou.pojo.TbItem;
+import org.apache.lucene.search.join.ScoreMode;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +18,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:spring-es.xml")
@@ -49,6 +54,13 @@ public class ElasticSearchTest {
         item.setSeller("步步高");
         item.setGoodsId(1L);
         item.setUpdateTime(new Date());
+
+        //添加规格
+        Map<String, String> specMap = new HashMap<>();
+        specMap.put("机身内存", "8G");
+        specMap.put("屏幕尺寸", "5.5");
+
+        item.setSpecMap(specMap);
 
         itemDao.save(item);
     }
@@ -142,6 +154,51 @@ public class ElasticSearchTest {
          * 参数1：域名（与实体类中@Field配置的一致）
          */
         queryBuilder.withQuery(QueryBuilders.matchQuery("keywords", "步步高"));
+
+        //获取查询对象
+        NativeSearchQuery query = queryBuilder.build();
+
+        //查询
+        AggregatedPage<TbItem> items = elasticsearchTemplate.queryForPage(query, TbItem.class);
+        System.out.println("总记录数：" + items.getTotalElements());
+        System.out.println("总页数：" + items.getTotalPages());
+        for (TbItem item : items) {
+            System.out.println(item);
+        }
+    }
+
+
+    //嵌套域搜索
+    @Test
+    public void nestedQuery(){
+
+        //创建查询构造对象
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+
+        //组合查询对象
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+
+        //基本查询条件
+        boolQuery.must(QueryBuilders.matchQuery("title", "手机"));
+
+        //添加过滤查询
+        /**
+         * 参数1：指定实体类中嵌套域对应属性名称
+         * 参数2：查询对象：域名，值
+         * 参数3：得分模式；在有多个查询文档的时候；选择这些文档中得分最大的作为本次查询的score分值
+         */
+        NestedQueryBuilder queryBuilder1 =
+                new NestedQueryBuilder("specMap", QueryBuilders.wildcardQuery("specMap.机身内存.keyword", "8G"), ScoreMode.Max);
+        boolQuery.filter(queryBuilder1);
+
+        NestedQueryBuilder queryBuilder2 =
+                new NestedQueryBuilder("specMap", QueryBuilders.wildcardQuery("specMap.屏幕尺寸.keyword", "5.5"), ScoreMode.Max);
+        boolQuery.filter(queryBuilder2);
+
+        /**
+         * 参数1：域名（与实体类中@Field配置的一致）
+         */
+        queryBuilder.withQuery(boolQuery);
 
         //获取查询对象
         NativeSearchQuery query = queryBuilder.build();
