@@ -2,7 +2,7 @@ var app = new Vue({
     el:"#app",
     data:{
         //查询条件对象
-        searchMap:{"keywords":"","category":"", "brand":"","spec":{}, "price":"", "pageNo":1, "pageSize":20},
+        searchMap:{"keywords":"","category":"", "brand":"","spec":{}, "price":"", "pageNo":1, "pageSize":20, "sortField":"","sort":""},
         //返回结果对象
         resultMap:{"itemList":[]},
         //分页导航条中的页号数组
@@ -13,6 +13,14 @@ var app = new Vue({
         backDot: false
     },
     methods: {
+        //排序查询
+        sortSearch: function(sortField, sort){
+            this.searchMap.sortField = sortField;
+            this.searchMap.sort = sort;
+
+            this.searchMap.pageNo = 1;
+            this.search();
+        },
         //根据页号查询
         queryByPageNo: function(pageNo){
             if(1<= pageNo && pageNo<=this.resultMap.totalPages){

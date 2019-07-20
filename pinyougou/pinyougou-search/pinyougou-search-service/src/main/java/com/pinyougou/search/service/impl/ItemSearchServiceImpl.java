@@ -11,10 +11,14 @@ import org.elasticsearch.common.document.DocumentField;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -53,8 +57,8 @@ public class ItemSearchServiceImpl implements ItemSearchService {
             //搜索关键字
             String keywords = searchMap.get("keywords") + "";
             if (StringUtils.isNotBlank(keywords)) {
-                //在标题、分类、品牌、商家名称4个域中都查询keyword
-                builder.withQuery(QueryBuilders.multiMatchQuery(keywords, "title", "category", "brand", "seller"));
+                //在标题、分类、品牌、商家名称4个域中都查询keyword；如果不设置操作类似则词条之间的搜索是或者关系，可以修改为并列and
+                builder.withQuery(QueryBuilders.multiMatchQuery(keywords, "title", "category", "brand", "seller").operator(Operator.AND));
 
                 //设置高亮
                 highlight = true;
@@ -124,6 +128,14 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         }
 
         builder.withPageable(PageRequest.of(pageNo-1, pageSize));
+
+        //设置排序
+        String sortField = searchMap.get("sortField")+"";
+        String sort = searchMap.get("sort")+"";
+        if (StringUtils.isNotBlank(sortField) && StringUtils.isNotBlank(sort)) {
+            FieldSortBuilder sortBuilder = SortBuilders.fieldSort(sortField).order("DESC".equals(sort) ? SortOrder.DESC : SortOrder.ASC);
+            builder.withSort(sortBuilder);
+        }
 
         //获取查询对象
         NativeSearchQuery searchQuery = builder.build();
