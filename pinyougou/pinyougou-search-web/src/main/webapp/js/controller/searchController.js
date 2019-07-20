@@ -2,7 +2,7 @@ var app = new Vue({
     el:"#app",
     data:{
         //查询条件对象
-        searchMap:{"keyword":"","category":"", "brand":"","spec":{}},
+        searchMap:{"keywords":"","category":"", "brand":"","spec":{}},
         //返回结果对象
         resultMap:{"itemList":[]}
     },
@@ -19,6 +19,8 @@ var app = new Vue({
 
                 delete this.searchMap.spec[key];
             }
+
+            this.search();
         },
         //添加过滤条件
         addSearchItem:function(key, value){
@@ -30,6 +32,8 @@ var app = new Vue({
                 //设置对象的属性值；参数1：对象，参数2：属性名，参数3：属性值
                 this.$set(this.searchMap.spec, key, value);
             }
+
+            this.search();
         },
         //查询
         search:function () {

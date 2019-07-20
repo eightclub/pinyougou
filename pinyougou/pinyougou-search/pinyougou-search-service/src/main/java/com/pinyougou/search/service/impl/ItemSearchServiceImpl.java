@@ -5,9 +5,12 @@ import com.alibaba.fastjson.JSON;
 import com.pinyougou.pojo.TbItem;
 import com.pinyougou.search.service.ItemSearchService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.document.DocumentField;
 import org.elasticsearch.common.text.Text;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
@@ -60,6 +63,35 @@ public class ItemSearchServiceImpl implements ItemSearchService {
                         .postTags("</span>");
                 builder.withHighlightFields(highlightField);
             }
+
+            //设置过滤查询（创建组合查询构造对象）
+            BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+
+            //商品分类
+            String category = searchMap.get("category") + "";
+            if (StringUtils.isNotBlank(category)) {
+                boolQuery.must(QueryBuilders.termQuery("category", category));
+            }
+
+            //品牌
+            String brand = searchMap.get("brand") + "";
+            if (StringUtils.isNotBlank(brand)) {
+                boolQuery.must(QueryBuilders.termQuery("brand", brand));
+            }
+
+            //规格
+            if (searchMap.get("spec")!=null) {
+                //嵌套域 = specMap.机身内存.keyword
+                Map<String, String> specMap = (Map<String, String>) searchMap.get("spec");
+                for (Map.Entry<String, String> entry : specMap.entrySet()) {
+                    String field = "specMap." + entry.getKey() + ".keyword";
+                    NestedQueryBuilder nestedQuery =
+                            QueryBuilders.nestedQuery("specMap", QueryBuilders.matchQuery(field, entry.getValue()), ScoreMode.Max);
+                    boolQuery.must(nestedQuery);
+                }
+            }
+
+            builder.withFilter(boolQuery);
         }
 
         //获取查询对象
