@@ -3,6 +3,7 @@ package com.pinyougou.search.service.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
 import com.pinyougou.pojo.TbItem;
+import com.pinyougou.search.dao.ItemDao;
 import com.pinyougou.search.service.ItemSearchService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.search.join.ScoreMode;
@@ -185,5 +186,13 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         resultMap.put("total", pageResult.getTotalElements());
 
         return resultMap;
+    }
+
+    @Autowired
+    private ItemDao itemDao;
+
+    @Override
+    public void importItemList(List<TbItem> itemList) {
+        itemDao.saveAll(itemList);
     }
 }
