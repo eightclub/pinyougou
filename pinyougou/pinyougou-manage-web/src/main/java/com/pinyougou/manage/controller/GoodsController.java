@@ -80,6 +80,8 @@ public class GoodsController {
     public Result delete(Long[] ids){
         try {
             goodsService.deleteGoods(ids);
+            //删除搜索系统商品数据
+            itemSearchService.deleteItemByIds(ids);
             return Result.ok("删除成功");
         } catch (Exception e) {
             e.printStackTrace();

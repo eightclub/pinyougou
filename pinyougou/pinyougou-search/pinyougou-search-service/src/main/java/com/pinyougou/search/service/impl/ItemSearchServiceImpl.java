@@ -195,4 +195,19 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     public void importItemList(List<TbItem> itemList) {
         itemDao.saveAll(itemList);
     }
+
+    @Override
+    public void deleteItemByIds(Long[] goodsIds) {
+/*
+        if (goodsIds != null && goodsIds.length > 0) {
+            for (Long goodsId : goodsIds) {
+                TbItem tbItem = new TbItem();
+                tbItem.setGoodsId(goodsId);
+                itemDao.delete(tbItem);
+            }
+        }
+*/
+
+        itemDao.deleteByGoodsIdIn(goodsIds);
+    }
 }

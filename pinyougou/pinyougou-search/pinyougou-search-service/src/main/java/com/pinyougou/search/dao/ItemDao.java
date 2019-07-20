@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ItemDao extends ElasticsearchRepository<TbItem, Long> {
+
+    //批量根据spu id数组删除
+    void deleteByGoodsIdIn(Long[] ids);
 }
