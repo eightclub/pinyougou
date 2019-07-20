@@ -2,14 +2,14 @@ var app = new Vue({
     el:"#app",
     data:{
         //查询条件对象
-        searchMap:{"keywords":"","category":"", "brand":"","spec":{}},
+        searchMap:{"keywords":"","category":"", "brand":"","spec":{}, "price":""},
         //返回结果对象
         resultMap:{"itemList":[]}
     },
     methods: {
         //移除过滤条件
         removeSearchItem: function(key){
-            if("brand"==key || "category"==key){
+            if("brand"==key || "category"==key || "price"==key){
                 this.searchMap[key] = "";
             } else {
                 //规格
@@ -24,7 +24,7 @@ var app = new Vue({
         },
         //添加过滤条件
         addSearchItem:function(key, value){
-            if("brand"==key || "category"==key){
+            if("brand"==key || "category"==key || "price"==key){
                 this.searchMap[key] = value;
             } else {
                 //规格
