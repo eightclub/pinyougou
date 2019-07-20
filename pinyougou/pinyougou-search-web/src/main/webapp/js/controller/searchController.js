@@ -112,9 +112,17 @@ var app = new Vue({
                 this.pageNoList.push(i);
             }
 
+        },
+        //根据参数名字获取参数
+        getParameterByName: function (name) {
+            return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ""])[1].replace(/\+/g, '%20')) || null
         }
     },
     created(){
+        var keywords = this.getParameterByName("keywords");
+        if (keywords != null && keywords != "") {
+            this.searchMap.keywords = keywords;
+        }
         //查询
         this.search();
     }
