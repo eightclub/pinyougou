@@ -47,10 +47,10 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 
         if (searchMap != null) {
             //搜索关键字
-            String keyword = searchMap.get("keyword") + "";
-            if (StringUtils.isNotBlank(keyword)) {
+            String keywords = searchMap.get("keywords") + "";
+            if (StringUtils.isNotBlank(keywords)) {
                 //在标题、分类、品牌、商家名称4个域中都查询keyword
-                builder.withQuery(QueryBuilders.multiMatchQuery(keyword, "title", "category", "brand", "seller"));
+                builder.withQuery(QueryBuilders.multiMatchQuery(keywords, "title", "category", "brand", "seller"));
 
                 //设置高亮
                 highlight = true;
