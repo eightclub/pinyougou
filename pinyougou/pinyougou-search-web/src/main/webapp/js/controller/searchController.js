@@ -2,9 +2,11 @@ var app = new Vue({
     el:"#app",
     data:{
         //查询条件对象
-        searchMap:{"keywords":"","category":"", "brand":"","spec":{}, "price":""},
+        searchMap:{"keywords":"","category":"", "brand":"","spec":{}, "price":"", "pageNo":1, "pageSize":20},
         //返回结果对象
-        resultMap:{"itemList":[]}
+        resultMap:{"itemList":[]},
+        //分页导航条中的页号数组
+        pageNoList:[]
     },
     methods: {
         //移除过滤条件
@@ -39,7 +41,44 @@ var app = new Vue({
         search:function () {
             axios.post("itemSearch/search.do", this.searchMap).then(function (response) {
                 app.resultMap = response.data;
+
+                //构建分页导航条
+                app.buildPagination();
             });
+
+        },
+        //构建分页导航条
+        buildPagination: function () {
+            this.pageNoList = [];
+            //起始页号
+            var startPageNo = 1;
+            //结束页号
+            var endPageNo = this.resultMap.totalPages;
+            //要显示的总页号数
+            var showPageNoTotal = 5;
+
+            //总页数大于 要显示的总页号数
+            if (this.resultMap.totalPages > showPageNoTotal) {
+                //当前页左右间隔
+                var interval = Math.floor(showPageNoTotal/2);
+                startPageNo = this.searchMap.pageNo - interval;
+                endPageNo = this.searchMap.pageNo + interval;
+
+                if(startPageNo > 0){
+                    if (endPageNo > this.resultMap.totalPages) {
+                        endPageNo = this.resultMap.totalPages;
+                        startPageNo = endPageNo - showPageNoTotal + 1;
+                    }
+                } else {
+                    //起始页必须要从1开始
+                    startPageNo = 1;
+                    endPageNo = showPageNoTotal;
+                }
+            }
+
+            for (var i = startPageNo; i <= endPageNo; i++) {
+                this.pageNoList.push(i);
+            }
 
         }
     },
