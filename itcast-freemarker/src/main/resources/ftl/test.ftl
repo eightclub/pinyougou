@@ -51,6 +51,25 @@ ${obj.name} --- ${obj.age}<br>
 <hr>
 如果是长整型的数据直接显示：${number}；可以使用?c将数值转换为字符串：${number?c}
 
+
+<br><hr><br>
+在freemarker中可以使用！处理空值：<br>
+如果为空则什么都不显示：${emp!}；如果值为空或者不存在的时候需要显示特别的内容可以使用!"要显示的内容" ：${emp!"emp的值为空。"}
+
+
+<br><hr><br>
+??? 前面两个??表示变量是否存在；如果存在则返回true，否则返回false：第3个?表示函数的调用<br>
+
+<#assign bool5=false />
+${bool5???string}
+
+<br>
+<#if str10??>
+    str10存在
+    <#else>
+    str10不存在
+</#if>
+
 <br>
 <br>
 <br>
