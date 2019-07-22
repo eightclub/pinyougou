@@ -5,10 +5,7 @@ import freemarker.template.Template;
 import org.junit.Test;
 
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FreemarkerTest {
 
@@ -39,6 +36,9 @@ public class FreemarkerTest {
         goodsList.add(map2);
 
         dataModal.put("goodsList", goodsList);
+
+        dataModal.put("today", new Date());
+        dataModal.put("number", 123456789L);
 
         //- 创建文件输出对象
         FileWriter fileWriter = new FileWriter("D:\\itcast\\test\\test.html");

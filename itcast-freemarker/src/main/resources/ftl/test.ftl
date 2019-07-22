@@ -31,7 +31,25 @@ list循环控制语句<br>
 <#list goodsList as goods>
     ${goods_index} -- ${goods.name} -- ${goods.price}<br>
 </#list>
+<br><hr><br>
+?size可以获取集合的大小<br>
+goodsList的集合大小为：${goodsList?size}<br>
+<hr>
+?eval将json字符串转换为对象<br>
+<#assign objStr='{"name":"黑马","age":13}'/>
+<#assign obj=objStr?eval />
 
+${obj.name} --- ${obj.age}<br>
+
+<hr>
+.now表示当前日期: ${.now}<br>
+当前的日期为：${today?date}<br>
+当前的时间为：${today?time}<br>
+当前的日期时间为：${today?datetime}<br>
+格式化显示日期：${today?string("yyyy年MM月dd日 HH:mm:ss SSSS")}
+
+<hr>
+如果是长整型的数据直接显示：${number}；可以使用?c将数值转换为字符串：${number?c}
 
 <br>
 <br>
