@@ -5,7 +5,9 @@ import freemarker.template.Template;
 import org.junit.Test;
 
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FreemarkerTest {
@@ -23,6 +25,20 @@ public class FreemarkerTest {
         Map<String, Object> dataModal = new HashMap<>();
         dataModal.put("name", "heima");
         dataModal.put("message", "i_am_ljb can we chat.");
+
+        List<Map<String, Object>> goodsList = new ArrayList<>();
+
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("name", "手机");
+        map1.put("price", 2999);
+        goodsList.add(map1);
+
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("name", "电视");
+        map2.put("price", 3999);
+        goodsList.add(map2);
+
+        dataModal.put("goodsList", goodsList);
 
         //- 创建文件输出对象
         FileWriter fileWriter = new FileWriter("D:\\itcast\\test\\test.html");
