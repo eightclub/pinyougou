@@ -1,16 +1,21 @@
 package com.pinyougou.manage.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.pinyougou.pojo.TbGoods;
 import com.pinyougou.pojo.TbItem;
-import com.pinyougou.search.service.ItemSearchService;
 import com.pinyougou.sellergoods.service.GoodsService;
 import com.pinyougou.vo.Goods;
 import com.pinyougou.vo.Result;
+import org.apache.activemq.command.ActiveMQQueue;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.jms.*;
 import java.util.List;
 
 @RequestMapping("/goods")
@@ -20,8 +25,11 @@ public class GoodsController {
     @Reference
     private GoodsService goodsService;
 
-    @Reference
-    private ItemSearchService itemSearchService;
+    @Autowired
+    private JmsTemplate jmsTemplate;
+
+    @Autowired
+    private Destination itemEsQueue;
 
     /**
      * 新增
@@ -81,7 +89,7 @@ public class GoodsController {
         try {
             goodsService.deleteGoods(ids);
             //删除搜索系统商品数据
-            itemSearchService.deleteItemByIds(ids);
+            //itemSearchService.deleteItemByIds(ids);
             return Result.ok("删除成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,8 +124,16 @@ public class GoodsController {
             if ("2".equals(status)) {
                 //根据spu id数组查询其对应的启用状态的sku
                 List<TbItem> itemList = goodsService.findItemListByGoodsIds(ids);
-                //更新搜索系统数据
-                itemSearchService.importItemList(itemList);
+                //更新搜索系统数据；发送MQ消息
+                //itemSearchService.importItemList(itemList);
+                jmsTemplate.send(itemEsQueue, new MessageCreator() {
+                    @Override
+                    public Message createMessage(Session session) throws JMSException {
+                        TextMessage textMessage = session.createTextMessage();
+                        textMessage.setText(JSON.toJSONString(textMessage));
+                        return textMessage;
+                    }
+                });
             }
             return Result.ok("更新状态成功");
         } catch (Exception e) {
