@@ -27,4 +27,9 @@
         <constructor-arg value="item_es_queue"/>
     </bean>
 
+    <!--队列模式，点对点的；商品删除的消息队列 -->
+    <bean id="itemEsDeleteQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="item_es_delete_queue"/>
+    </bean>
+
 </beans>

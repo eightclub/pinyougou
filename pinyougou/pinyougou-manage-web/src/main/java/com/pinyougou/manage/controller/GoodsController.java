@@ -31,6 +31,9 @@ public class GoodsController {
     @Autowired
     private Destination itemEsQueue;
 
+    @Autowired
+    private Destination itemEsDeleteQueue;
+
     /**
      * 新增
      * @param goods 商品vo（商品基本、描述、sku列表）
@@ -90,6 +93,14 @@ public class GoodsController {
             goodsService.deleteGoods(ids);
             //删除搜索系统商品数据
             //itemSearchService.deleteItemByIds(ids);
+            jmsTemplate.send(itemEsDeleteQueue, new MessageCreator() {
+                @Override
+                public Message createMessage(Session session) throws JMSException {
+                    ObjectMessage objectMessage = session.createObjectMessage();
+                    objectMessage.setObject(ids);
+                    return objectMessage;
+                }
+            });
             return Result.ok("删除成功");
         } catch (Exception e) {
             e.printStackTrace();

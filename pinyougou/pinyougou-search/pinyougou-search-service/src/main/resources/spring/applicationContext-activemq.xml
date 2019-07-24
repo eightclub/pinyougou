@@ -31,4 +31,19 @@
         <property name="messageListener" ref="itemImportMessageListener"/>
     </bean>
 
+    <!--队列模式，点对点的；商品删除的消息队列 -->
+    <bean id="itemEsDeleteQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="item_es_delete_queue"/>
+    </bean>
+    <!-- messageListener实现类 -->
+    <bean id="itemDeleteMessageListener" class="com.pinyougou.search.activemq.listener.ItemDeleteMessageListener"/>
+
+    <!-- 配置一个jms监听容器 -->
+    <bean id="jmsContainer2" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="destination" ref="itemEsDeleteQueue"/>
+        <property name="messageListener" ref="itemDeleteMessageListener"/>
+    </bean>
+
+
 </beans>
