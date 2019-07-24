@@ -31,5 +31,9 @@
     <bean id="itemEsDeleteQueue" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg value="item_es_delete_queue"/>
     </bean>
+    <!--主题模式，发布与订阅的；商品审核通过的消息主题 -->
+    <bean id="itemTopic" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg value="item_topic"/>
+    </bean>
 
 </beans>

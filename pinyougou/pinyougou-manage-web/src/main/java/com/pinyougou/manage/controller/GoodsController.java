@@ -34,6 +34,9 @@ public class GoodsController {
     @Autowired
     private Destination itemEsDeleteQueue;
 
+    @Autowired
+    private Destination itemTopic;
+
     /**
      * 新增
      * @param goods 商品vo（商品基本、描述、sku列表）
@@ -93,19 +96,28 @@ public class GoodsController {
             goodsService.deleteGoods(ids);
             //删除搜索系统商品数据
             //itemSearchService.deleteItemByIds(ids);
-            jmsTemplate.send(itemEsDeleteQueue, new MessageCreator() {
-                @Override
-                public Message createMessage(Session session) throws JMSException {
-                    ObjectMessage objectMessage = session.createObjectMessage();
-                    objectMessage.setObject(ids);
-                    return objectMessage;
-                }
-            });
+            sendMQMsg(itemEsDeleteQueue, ids);
             return Result.ok("删除成功");
         } catch (Exception e) {
             e.printStackTrace();
         }
         return Result.fail("删除失败");
+    }
+
+    /**
+     * 发送消息到MQ
+     * @param destination 模式（队列、主题）
+     * @param ids 商品spu id数组
+     */
+    private void sendMQMsg(Destination destination, Long[] ids) {
+        jmsTemplate.send(destination, new MessageCreator() {
+            @Override
+            public Message createMessage(Session session) throws JMSException {
+                ObjectMessage objectMessage = session.createObjectMessage();
+                objectMessage.setObject(ids);
+                return objectMessage;
+            }
+        });
     }
 
     /**
@@ -141,10 +153,12 @@ public class GoodsController {
                     @Override
                     public Message createMessage(Session session) throws JMSException {
                         TextMessage textMessage = session.createTextMessage();
-                        textMessage.setText(JSON.toJSONString(textMessage));
+                        textMessage.setText(JSON.toJSONString(itemList));
                         return textMessage;
                     }
                 });
+                //发送消息到MQ
+                sendMQMsg(itemTopic, ids);
             }
             return Result.ok("更新状态成功");
         } catch (Exception e) {
