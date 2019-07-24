@@ -37,6 +37,9 @@ public class GoodsController {
     @Autowired
     private Destination itemTopic;
 
+    @Autowired
+    private Destination itemDeleteTopic;
+
     /**
      * 新增
      * @param goods 商品vo（商品基本、描述、sku列表）
@@ -97,6 +100,9 @@ public class GoodsController {
             //删除搜索系统商品数据
             //itemSearchService.deleteItemByIds(ids);
             sendMQMsg(itemEsDeleteQueue, ids);
+
+            //发送MQ商品删除的主题消息
+            sendMQMsg(itemDeleteTopic, ids);
             return Result.ok("删除成功");
         } catch (Exception e) {
             e.printStackTrace();
