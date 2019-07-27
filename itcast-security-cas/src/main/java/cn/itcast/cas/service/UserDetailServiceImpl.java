@@ -24,7 +24,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //角色权限列表
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_SELLER"));
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
         //用户信息（用户名、密码、角色）
         return new User(username, "", authorities);
