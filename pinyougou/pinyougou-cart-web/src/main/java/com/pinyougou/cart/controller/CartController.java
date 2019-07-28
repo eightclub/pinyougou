@@ -65,6 +65,7 @@ public class CartController {
                 CookieUtils.setCookie(request, response, COOKIE_CART_LIST, cartListJsonStr, COOKIE_CART_LIST_MAX_AGE, true);
             } else {
                 //已登录；将新购物车列表存入redis
+                cartService.saveCartListInRedisByUsername(newCartList, username);
             }
             return Result.ok("加入购物车成功！");
         } catch (Exception e) {
@@ -92,7 +93,9 @@ public class CartController {
             return cookieCartList;
         } else {
             //已登录；购物车数据来自redis
-            return new ArrayList<>();
+            List<Cart> redisCartList = cartService.findCartListByUsername(username);
+
+            return redisCartList;
         }
     }
 

@@ -13,4 +13,18 @@ public interface CartService {
      * @return 新购物车列表
      */
     List<Cart> addItemToCartList(List<Cart> cartList, Long itemId, Integer num);
+
+    /**
+     * 根据用户名到redis中查询购物车列表
+     * @param username 用户名
+     * @return 购物车列表
+     */
+    List<Cart> findCartListByUsername(String username);
+
+    /**
+     * 将购物车列表保存到redis
+     * @param newCartList 购物车列表
+     * @param username 用户名
+     */
+    void saveCartListInRedisByUsername(List<Cart> newCartList, String username);
 }
