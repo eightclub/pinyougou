@@ -16,4 +16,10 @@ public interface OrderService extends BaseService<TbOrder> {
      */
     PageInfo<TbOrder> search(Integer pageNum, Integer pageSize, TbOrder order);
 
+    /**
+     * 保存购物车列表数据为订单的相关数据
+     * @param order 订单基本信息
+     * @return 支付日志id（交易编号）
+     */
+    String addOrder(TbOrder order);
 }

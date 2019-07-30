@@ -12,9 +12,30 @@ var app = new Vue({
         //当前选中的地址
         selectedAddress: {},
         //要提交的订单对象;默认支付方式：微信付款
-        order:{"paymentType":"1"}
+        order: {"paymentType": "1"}
     },
     methods: {
+        //提交订单
+        submitOrder: function () {
+            //收件人地址
+            this.order.receiverAreaName = this.selectedAddress.address;
+            this.order.receiverMobile = this.selectedAddress.mobile;
+            this.order.receiver = this.selectedAddress.contact;
+
+            axios.post("order/add.do", this.order).then(function (response) {
+                if (response.data.success) {
+                    if ("1" == app.order.paymentType) {
+                        //微信付款 跳转到支付页面
+                        location.href = "pay.html?outTradeNo=" + response.data.message;
+                    } else {
+                        //货到付款 跳转到支付成功页面
+                        location.href = "paysuccess.html";
+                    }
+                } else {
+                    alert(response.data.message);
+                }
+            });
+        },
         //设置当前选择的地址
         selectAddress: function (address) {
             this.selectedAddress = address;
