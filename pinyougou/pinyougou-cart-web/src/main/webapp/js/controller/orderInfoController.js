@@ -69,7 +69,7 @@ var app = new Vue({
         //查询用户名
         this.getUsername();
         //查询购物车列表
-        //this.findCartList();
+        this.findCartList();
         //查询用户收件人地址列表
         this.findAddressList();
     }
