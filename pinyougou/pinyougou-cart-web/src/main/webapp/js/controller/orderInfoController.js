@@ -6,15 +6,31 @@ var app = new Vue({
         //购物车列表
         cartList: [],
         //总价格和总数
-        totalValue:{"totalNum":0, "totalMoney":0},
+        totalValue: {"totalNum": 0, "totalMoney": 0},
         //地址列表
-        addressList:[]
+        addressList: [],
+        //当前选中的地址
+        selectedAddress: {}
     },
     methods: {
+        //设置当前选择的地址
+        selectAddress: function (address) {
+            this.selectedAddress = address;
+        },
         //查询用户收件人地址列表
-        findAddressList: function(){
+        findAddressList: function () {
             axios.get("address/findAddressList.do").then(function (response) {
                 app.addressList = response.data;
+
+                //处理默认选中的地址；也就是默认值为1的地址
+                for (var i = 0; i < response.data.length; i++) {
+                    const address = response.data[i];
+                    if ("1" == address.isDefault) {
+                        app.selectedAddress = address;
+                        break;
+                    }
+
+                }
             });
         },
         //查询购物车列表
@@ -27,8 +43,8 @@ var app = new Vue({
             });
         },
         //计算总价格和总数
-        sumTotalValue: function(cartList){
-            var totalValue = {"totalNum":0, "totalMoney":0};
+        sumTotalValue: function (cartList) {
+            var totalValue = {"totalNum": 0, "totalMoney": 0};
             for (var i = 0; i < cartList.length; i++) {
                 var cart = cartList[i];
                 for (var j = 0; j < cart.orderItemList.length; j++) {
