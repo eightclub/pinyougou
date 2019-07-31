@@ -55,6 +55,8 @@ public class PayController {
         Result result = Result.fail("查询支付状态失败！");
 
         try {
+            //3分钟未支付，表示支付超时
+            int count = 0;
             while (true){
 
                 //查询支付状态
@@ -68,6 +70,12 @@ public class PayController {
                     //支付成功，需要更新支付日志、订单的状态
                     orderService.updateOrderStatus(outTradeNo, resultMap.get("transaction_id"));
                     result = Result.ok("查询支付状态成功！");
+                    break;
+                }
+                count++;
+
+                if (count > 60) {
+                    result = Result.fail("支付超时");
                     break;
                 }
 

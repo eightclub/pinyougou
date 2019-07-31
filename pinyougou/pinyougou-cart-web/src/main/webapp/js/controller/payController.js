@@ -16,7 +16,13 @@ var app = new Vue({
                 if(response.data.success){
                     location.href = "paysuccess.html";
                 } else {
-                    location.href = "payfail.html";
+                    if (response.data.message == "支付超时") {
+                        //支付超时；重新生成二维码
+                        alert(response.data.message);
+                        app.createNative();
+                    } else {
+                        location.href = "payfail.html";
+                    }
                 }
             });
         },
