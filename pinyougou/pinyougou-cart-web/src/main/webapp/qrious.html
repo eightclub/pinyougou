@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>qrious测试</title>
+    <script src="plugins/qrious.min.js"></script>
+</head>
+<body>
+<img id="qrious"/>
+
+<script type="text/javascript">
+
+    //创建二维码
+    var qr = new QRious({
+        //要渲染的dom元素
+        element: document.getElementById("qrious"),
+        //二维码图片大小
+        size: 250,
+        //容错级别
+        level: "H",
+        //二维码中的值
+        value: "hi heima."
+    });
+</script>
+</body>
+</html>
