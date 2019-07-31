@@ -59,7 +59,11 @@
             <artifactId>pinyougou-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
+        <!--  微信支付 sdk -->
+        <dependency>
+            <groupId>com.github.wxpay</groupId>
+            <artifactId>wxpay-sdk</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
