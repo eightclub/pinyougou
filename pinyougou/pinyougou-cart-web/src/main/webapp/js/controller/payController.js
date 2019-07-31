@@ -9,6 +9,17 @@ var app = new Vue({
         totalFee: 0
     },
     methods: {
+        //查询支付状态
+        queryPayStatus: function (outTradeNo) {
+            axios.get("pay/queryPayStatus.do?outTradeNo=" + this.outTradeNo+ "&r=" + Math.random()).then(function (response) {
+
+                if(response.data.success){
+                    location.href = "paysuccess.html";
+                } else {
+                    location.href = "payfail.html";
+                }
+            });
+        },
         //生成二维码
         createNative: function () {
             //接收浏览器地址栏中的交易订单号
@@ -16,7 +27,6 @@ var app = new Vue({
             axios.get("pay/createNative.do?outTradeNo=" + this.outTradeNo).then(function (response) {
                 if ("SUCCESS" == response.data.result_code) {
                     //设置总金额
-                    console.log(response.data);
                     app.totalFee = (response.data.totalFee / 100).toFixed(2);
                     //生成二维码
                     var qr = new QRious({
@@ -26,6 +36,8 @@ var app = new Vue({
                         value: response.data.code_url
                     });
 
+                    //查询支付状态
+                    app.queryPayStatus(app.outTradeNo);
                 } else {
                     alert(response.data.message);
                 }
