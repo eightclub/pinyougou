@@ -14,11 +14,10 @@ var app = new Vue({
             axios.get("pay/queryPayStatus.do?outTradeNo=" + this.outTradeNo+ "&r=" + Math.random()).then(function (response) {
 
                 if(response.data.success){
-                    location.href = "paysuccess.html";
+                    location.href = "paysuccess.html?totalFee=" + app.totalFee;
                 } else {
                     if (response.data.message == "支付超时") {
                         //支付超时；重新生成二维码
-                        alert(response.data.message);
                         app.createNative();
                     } else {
                         location.href = "payfail.html";
