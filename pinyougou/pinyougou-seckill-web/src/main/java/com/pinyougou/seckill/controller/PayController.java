@@ -17,7 +17,7 @@ import java.util.Map;
 @RestController
 public class PayController {
 
-    @Reference
+    @Reference(timeout = 10000)
     private SeckillOrderService orderService;
 
     @Reference(timeout = 3000)
@@ -75,15 +75,28 @@ public class PayController {
                 }
                 count++;
 
-                if (count > 20) {
+                if (count > 5) {
                     result = Result.fail("支付超时");
+
+                    //关闭微信订单
+                    Map<String, String> map = payService.closeOrder(outTradeNo);
+                    if ("ORDERPAID".equals(map.get("err_code"))) {
+                        //支付成功，需要更新秒杀订单、订单的状态
+                        orderService.saveSeckillOrderInRedisToDb(outTradeNo, map.get("transaction_id"));
+                        result = Result.ok("查询支付状态成功！");
+                        break;
+                    }
+
+                    //将redis中订单删除并库存加回
+                    orderService.deleteSeckillOrder(outTradeNo);
+
                     break;
                 }
 
                 //每隔3秒
                 Thread.sleep(3000);
             }
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
