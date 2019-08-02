@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class SeckillOrderController {
 
-    @Reference
+    @Reference(timeout = 10000)
     private SeckillOrderService seckillOrderService;
 
     /**
