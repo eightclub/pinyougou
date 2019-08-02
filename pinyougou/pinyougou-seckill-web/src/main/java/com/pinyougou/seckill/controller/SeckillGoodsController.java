@@ -7,12 +7,24 @@ import com.pinyougou.seckill.service.SeckillGoodsService;
 import com.pinyougou.vo.Result;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("/seckillGoods")
 @RestController
 public class SeckillGoodsController {
 
     @Reference
     private SeckillGoodsService seckillGoodsService;
+
+
+    /**
+     * 查询库存大于0，已审核，开始时间小于等于当前时间，结束时间大于当前时间的秒杀商品并根据开始时间升序排序
+     * @return 秒杀商品列表
+     */
+    @GetMapping("/findList")
+    public List<TbSeckillGoods> findList(){
+        return seckillGoodsService.findList();
+    }
 
     /**
      * 新增
