@@ -26,7 +26,7 @@ public class SeckillTask {
      * 更新秒杀商品数据到redis
      *
      */
-    @Scheduled(cron = "0/2 * * * * ?")
+    @Scheduled(cron = "0/3 * * * * ?")
     public void refreshSeckillGoods(){
         //- 查询在redis中秒杀商品的id集合
         Set set = redisTemplate.boundHashOps("SECKILL_GOODS").keys();
@@ -62,6 +62,30 @@ public class SeckillTask {
                 redisTemplate.boundHashOps("SECKILL_GOODS").put(tbSeckillGoods.getId(), tbSeckillGoods);
             }
             System.out.println("共缓存了 " + seckillGoodsList.size() + " 到缓存中...");
+        }
+    }
+
+    /**
+     * 将在redis中结束时间小于等于当前时间的秒杀商品需要从redis中移除并更新到mysql数据库中。
+     *
+     */
+    @Scheduled(cron = "0/2 * * * * ?")
+    public void deleteSeckillGoods(){
+        //- 获取redis中秒杀商品列表
+        List<TbSeckillGoods> seckillGoodsList = redisTemplate.boundHashOps("SECKILL_GOODS").values();
+        //- 遍历每个商品，如果结束时间小于等于当前时间
+        if (seckillGoodsList != null && seckillGoodsList.size() > 0) {
+            for (TbSeckillGoods tbSeckillGoods : seckillGoodsList) {
+                if (tbSeckillGoods.getEndTime().getTime() <= System.currentTimeMillis()) {
+                    //  - 更新mysql中商品
+                    seckillGoodsMapper.updateByPrimaryKeySelective(tbSeckillGoods);
+                    //  - 删除redis中商品
+                    redisTemplate.boundHashOps("SECKILL_GOODS").delete(tbSeckillGoods.getId());
+
+                    System.out.println("将商品id为：" + tbSeckillGoods.getId() + " 移出缓存...");
+                }
+            }
+
         }
     }
 }
